@@ -1,119 +1,65 @@
-// Barra de navegacion
-
-var navbar = document.getElementsByClassName('fijo')[0];
-var login = document.getElementsByClassName('modal__login')[0];
-var idioma = document.getElementsByClassName('modal__idioma')[0];
-
-window.onscroll = function() {
-  if (window.pageYOffset > 0) {
-    navbar.classList.add('fijo--scroll');
-  } else {
-    navbar.classList.remove('fijo--scroll');
-  }
-}
-
-function loginDesplegable() {
-  if (login.style.display === 'none') {
-    login.style.display = 'block';
-  } else {
-    login.style.display = 'none';
-  }
-}
-
-function idiomaDesplegable() {
-  if (idioma.style.display === 'none') {
-    idioma.style.display = 'block';
-  } else {
-    idioma.style.display = 'none';
-  }
-}
-
-/*-----------------------------------------------------------------------------------------*/
-// Lista desplegable
-var slides = document.getElementsByClassName('slide');
-let slideAutomatico;
-var n = 1;
-var numSlide = document.getElementsByClassName("slide").length;
-showSlides(n);
-
-function showSlides(slideIndex) {
-  n = slideIndex;
-  var i;
-  var slides = document.getElementsByClassName("slide");
-  var dots = document.getElementsByClassName("dot");
-  
-  for (i = 0; i < slides.length; i++)
-    slides[i].style.display = "none";  
-  slides[slideIndex - 1].style.display = "flex";
-
-  for (i = 0; i < dots.length; i++) {
-    if(i % slides.length == slideIndex - 1){
-      dots[i].className = dots[i].className + " dot--active";
-    }
-    else{
-      dots[i].className = dots[i].className.replace(" dot--active", "");
+// Interpola los estilos de la barra de navegación, cuando el scroll es cero o mayor de cero
+function activarAnimacionNavbar(){
+  let navbar = document.querySelector('.fijo');
+  window.onscroll = function() {
+    if (window.pageYOffset > 0) {
+      navbar.classList.add('fijo--scroll');
+    } else {
+      navbar.classList.remove('fijo--scroll');
     }
   }
-  clearInterval(slideAutomatico);
-  slideAutomatico = setInterval(cambiarSlide, 5000);
 }
 
-function cambiarSlide(){
-  n += 1;
-  if(n == numSlide + 1)
-    n = 1;
-  showSlides(n);
-}
+// Agrega la interaccón a todos los menus desplegables
+function activarAnimacionMenusDesplegables(){
+  let selectionArray = document.querySelectorAll(".selection");
 
-/*-----------------------------------------------------------------------------------------*/
-// Lista desplegable
-
-let selectionArray = document.querySelectorAll(".selection");
-
-selectionArray.forEach((selection) =>{
-  let box = selection.querySelector(".selection__box");
-  let optionList = selection.querySelector(".selection__option");
-  let itemArray = selection.querySelectorAll(".selection__option__item");
-  let content = selection.querySelector(".selection__box__content");
-  let icon = selection.querySelector(".selection__box__icon");
-  
-  itemArray.forEach((item) => {
-    item.addEventListener("click", (e) => {
-      content.innerHTML = e.currentTarget.innerHTML;
-      if(optionList.classList.contains("selection__option--open")){
+  selectionArray.forEach((selection) =>{
+    let box = selection.querySelector(".selection__box");
+    let optionList = selection.querySelector(".selection__option");
+    let itemArray = selection.querySelectorAll(".selection__option__item");
+    let content = selection.querySelector(".selection__box__content");
+    let icon = selection.querySelector(".selection__box__icon");
+    
+    itemArray.forEach((item) => {
+      item.addEventListener("click", (e) => {
+        content.innerHTML = e.currentTarget.innerHTML;
+        if(optionList.classList.contains("selection__option--open")){
+          optionList.classList.replace("selection__option--open", "selection__option--close");
+          icon.classList.replace("selection__box__icon--up", "selection__box__icon--down");
+        }
+        if(content.classList.contains("selection__box__content--void")){
+          content.classList.replace("selection__box__content--void", "selection__box__content--full");
+        }
+      });
+    });
+    
+    box.addEventListener("click", () => {
+      if(optionList.classList.contains("selection__option--close") && !selection.classList.contains("selection--disabled")){
+        optionList.classList.replace("selection__option--close", "selection__option--open");
+        icon.classList.replace("selection__box__icon--down", "selection__box__icon--up");
+      }
+      else{
         optionList.classList.replace("selection__option--open", "selection__option--close");
         icon.classList.replace("selection__box__icon--up", "selection__box__icon--down");
       }
-      if(content.classList.contains("selection__box__content--void")){
-        content.classList.replace("selection__box__content--void", "selection__box__content--full");
+    });
+  });
+
+  window.addEventListener("click", (e) =>{
+    const element = e.target;
+    selectionArray.forEach((selection) =>{
+      let optionList = selection.querySelector(".selection__option");
+      let icon = selection.querySelector(".selection__box__icon");
+      if(!selection.contains(element) && optionList.classList.contains("selection__option--open")){
+        optionList.classList.replace("selection__option--open", "selection__option--close");
+        icon.classList.replace("selection__box__icon--up", "selection__box__icon--down");
       }
     });
   });
-  box.addEventListener("click", () => {
-    if(optionList.classList.contains("selection__option--close") && !selection.classList.contains("selection--disabled")){
-      optionList.classList.replace("selection__option--close", "selection__option--open");
-      icon.classList.replace("selection__box__icon--down", "selection__box__icon--up");
-    }
-    else{
-      optionList.classList.replace("selection__option--open", "selection__option--close");
-      icon.classList.replace("selection__box__icon--up", "selection__box__icon--down");
-    }
-  });
-});
+}
 
-window.addEventListener("click", (e) =>{
-  const element = e.target;
-  selectionArray.forEach((selection) =>{
-    let optionList = selection.querySelector(".selection__option");
-    let icon = selection.querySelector(".selection__box__icon");
-    if(!selection.contains(element) && optionList.classList.contains("selection__option--open")){
-      optionList.classList.replace("selection__option--open", "selection__option--close");
-      icon.classList.replace("selection__box__icon--up", "selection__box__icon--down");
-    }
-  });
-});
-
-// Lista de distritos Destinos
+// Coloca la lista de distritos correspondientes a una provincia dentro de las opciones del menu desplegable de distritos
 function generarDistritos(provincia){
   let selection = document.getElementById("distritoSelection");
   let content = selection.querySelector(".selection__box__content");
@@ -152,8 +98,32 @@ function generarDistritos(provincia){
   });
 }
 
-/*-----------------------------------------------------------------------------------------*/
+// Devuelve en texto plano el HTML de una card
+function generarCardHTML(link, nombre, provincia, categoria, corazones){
+  let cardsHTML = `
+    <div class="card">
+      <div class="card__imagen">
+        <img class="card__imagen__img" src=${link} alt="${nombre}.png">
+        <h5 class="card__imagen__titulo">${nombre}</h5>
+        <p class="card__imagen__lugar">${provincia}</p>
+      </div>
+      <div class="card__descripcion">
+        <div class="etiqueta">
+          <span class="etiqueta__icono"><i class="fas fa-tag"></i></span>
+          <span class="etiqueta__clase">${categoria}</span>
+        </div>
+        <div class="corazon corazon--desactive">
+          <span class="corazon__icon"><i class="fas fa-heart"></i><i class="far fa-heart"></i></span>
+          <span class="corazon__numero">${corazones}</span>
+        </div>
+        <a class="flecha" href="/destinos/${nombre}/"><i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+    `;
+  return cardsHTML;
+}
 
+// Obtiene los resultados de la consulta de recursos turisticos y los muestra en el navegador
 function consultarLugares(){
   let provincia = document.getElementById("provincia").innerText;
   let distrito = document.getElementById("distrito").innerText;
@@ -182,26 +152,7 @@ function consultarLugares(){
           let cards = data;
           let cardsHTML = "";
           cards.forEach(({link, nombre, provincia, categoria, corazones}) => {
-            cardsHTML += `
-            <div class="card">
-              <div class="card__imagen">
-                <img class="card__imagen__img" src=${link} alt="${nombre}.png">
-                <h5 class="card__imagen__titulo">${nombre}</h5>
-                <p class="card__imagen__lugar">${provincia}</p>
-              </div>
-              <div class="card__descripcion">
-                <div class="etiqueta">
-                  <span class="etiqueta__icono"><i class="fas fa-tag"></i></span>
-                  <span class="etiqueta__clase">${categoria}</span>
-                </div>
-                <div class="corazon">
-                  <span class="corazon__icon"><i class="fas fa-heart"></i></span>
-                  <span class="corazon__numero">${corazones}</span>
-                </div>
-                <a class="flecha" href="./${nombre}/"><i class="fas fa-arrow-right"></i></a>
-              </div>
-            </div>
-            `;
+            cardsHTML += generarCardHTML(link, nombre, provincia, categoria, corazones);
           });
           resultadoHTML += `
           <h4 class="recomendados__titulo">Recomendados para ti</h4>
@@ -219,28 +170,8 @@ function consultarLugares(){
       else{
         let cardsHTML = "";
         cards.forEach(({link, nombre, provincia, categoria, corazones}) => {
-          cardsHTML += `
-          <div class="card">
-            <div class="card__imagen">
-              <img class="card__imagen__img" src=${link} alt="${nombre}.png">
-              <h5 class="card__imagen__titulo">${nombre}</h5>
-              <p class="card__imagen__lugar">${provincia}</p>
-            </div>
-            <div class="card__descripcion">
-              <div class="etiqueta">
-                <span class="etiqueta__icono"><i class="fas fa-tag"></i></span>
-                <span class="etiqueta__clase">${categoria}</span>
-              </div>
-              <div class="corazon">
-                <span class="corazon__icon"><i class="fas fa-heart"></i></span>
-                <span class="corazon__numero">${corazones}</span>
-              </div>
-              <a class="flecha" href="./${nombre}/"><i class="fas fa-arrow-right"></i></a>
-            </div>
-          </div>
-          `;
+          cardsHTML += generarCardHTML(link, nombre, provincia, categoria, corazones);
         });
-      
         resultadoHTML += `
         <div class="resultados">
           <h4 class="resultados__titulo">Resultados</h4>
@@ -253,9 +184,9 @@ function consultarLugares(){
       resultado.innerHTML = resultadoHTML;
     });
   }
-
 }
 
+// Añade los botones para desplazarse en los recursos turisticos recomendados
 function activarRecomendaciones(){
   let recomendadosArray =  document.querySelectorAll(".recomendados");
   recomendadosArray.forEach((recomendados) =>{
@@ -281,24 +212,22 @@ function activarRecomendaciones(){
   });
 }
 
-activarRecomendaciones();
-
-
-// MAPA
-function iniciarMap(){
-  let nombre = document.querySelector(".slide__titulo").innerHTML;
-  fetch(`../../api/coordenadas?nombre=${nombre}`)
-  .then(response => response.json())
-  .then(data => {
-    let coord = {lat: data.latitud, lng: data.longuitud};
-    let map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 15,
-      center: coord
-    });
-    let marker = new google.maps.Marker({
-      position: coord,
-      map: map,
-      title: 'Mapa Cargado!'
-    });
+// Agrega animacion a los checklist
+function activarCheckList (){
+  checklistArray = document.querySelectorAll(".checklist");
+  (checklistArray.length > 0 ) && checklistArray.forEach((check) => {
+    radioInput = check.querySelector(".checklist__input");
+    radioInput.addEventListener('change', (e) =>{
+      checklistArray.forEach((c) => {
+        marca = c.querySelector(".checklist__marca");
+        if(marca.classList.contains("checklist__marca--active")){
+          marca.classList.replace("checklist__marca--active", "checklist__marca--desactive");
+        }
+      });
+      marca = e.target.parentNode.querySelector(".checklist__marca");
+      if(marca.classList.contains("checklist__marca--desactive")){
+        marca.classList.replace("checklist__marca--desactive", "checklist__marca--active");
+      }
+    })
   });
 }

@@ -1,8 +1,9 @@
 from django.db import models
 from django.db.models.fields import BooleanField
 
-# Create your models here.
+from allauth.socialaccount.models import SocialAccount
 
+# Create your models here.
 class Provincia(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=255, blank=False, null=False)
@@ -43,3 +44,8 @@ class Coordenadas(models.Model):
     recurso_id = models.OneToOneField(Recurso, on_delete=models.CASCADE, blank=False, null=False)
     latitud = models.FloatField(blank=True, null=True)
     longitud = models.FloatField(blank=True, null=True)
+
+class Favorito(models.Model):
+    id = models.AutoField(primary_key = True)
+    usuario_id = models.ForeignKey(SocialAccount, on_delete=models.CASCADE, blank=False, null=False)
+    recurso_id = models.ForeignKey(Recurso, on_delete=models.CASCADE, blank=False, null=False)

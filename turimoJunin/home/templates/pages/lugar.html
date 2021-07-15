@@ -65,5 +65,25 @@
 
 {% endblock %}
 {% block scripts %}
+<script>
+  activarRecomendaciones();
+  function iniciarMap(){
+    let nombre = document.querySelector(".slide__titulo").innerHTML;
+    fetch(`../../api/coordenadas?nombre=${nombre}`)
+    .then(response => response.json())
+    .then(data => {
+      let coord = {lat: data.latitud, lng: data.longuitud};
+      let map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 15,
+        center: coord
+      });
+      let marker = new google.maps.Marker({
+        position: coord,
+        map: map,
+        title: 'Mapa Cargado!'
+      });
+    });
+  }
+</script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMk5chJWP3Ly5JpJkzWAfDn_x1a2je4no&callback=iniciarMap"></script>
 {% endblock %}

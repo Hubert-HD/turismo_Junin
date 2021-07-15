@@ -143,8 +143,8 @@
             <span class="etiqueta__icono"><i class="fas fa-tag"></i></span>
             <span class="etiqueta__clase">{{ card.categoria }}</span>
           </div>
-          <div class="corazon">
-            <span class="corazon__icon"><i class="fas fa-heart"></i></span>
+          <div class="corazon corazon--desactive">
+            <span class="corazon__icon"><i class="fas fa-heart"></i><i class="far fa-heart"></i></span>
             <span class="corazon__numero">{{ card.corazones }}</span>
           </div>
           <a class="flecha" href="destinos/{{ card.nombre }}/"><i class="fas fa-arrow-right"></i></a>
@@ -155,4 +155,49 @@
   <span class="recomendados__button--derecha"><i class="fas fa-chevron-right"></i></span>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    // Variables globales para el control del slide automatico
+    let slides = document.getElementsByClassName('slide');
+    let numSlide = slides.length;
+    let slideAutomatico;
+    let n = 1;
+
+    // Muestra un slide y oculta los otros, donde slideIndex es la indice que le correponde al slide que se desea mostrar
+    function showSlides(slideIndex) {
+      let i;
+      let dots = document.getElementsByClassName("dot");
+  
+      for (i = 0; i < slides.length; i++)
+        slides[i].style.display = "none";  
+      slides[slideIndex - 1].style.display = "flex";
+
+      for (i = 0; i < dots.length; i++) {
+        if(i % slides.length == slideIndex - 1){
+          dots[i].className = dots[i].className + " dot--active";
+        }
+        else{
+          dots[i].className = dots[i].className.replace(" dot--active", "");
+        }
+      }
+      n = slideIndex;
+      clearInterval(slideAutomatico);
+      slideAutomatico = setInterval(cambiarSlide, 5000);
+    }
+
+    // Muestra el siguiente slide
+    function cambiarSlide(){
+      n += 1;
+      if(n == numSlide + 1)
+        n = 1;
+      showSlides(n);
+    }
+
+    // Muestra el slide de la posicion 1, si el numero de slides es mayor que 1
+    (numSlide > 0) && showSlides(n);
+
+    activarRecomendaciones();
+  </script>
 {% endblock %}

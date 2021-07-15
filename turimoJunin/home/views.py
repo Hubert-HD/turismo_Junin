@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 from allauth.socialaccount.models import SocialAccount
-from .models import Provincia, Categoria, Distrito, Recurso, Coordenadas
+from .models import Provincia, Categoria, Distrito, Recurso, Coordenadas, Favorito
 
 
 
@@ -103,6 +103,30 @@ def lugarTuristicoView(request, nombre):
   else:
     return render(request, 'no_econtrado.html')
 
+def favoritosView(request):
+  provincias = []
+  categorias_tangibles = []
+  categorias_no_tangibles = []
+  for provincia in Provincia.objects.all():
+    provincias.append(provincia.nombre)
+  for categoria in Categoria.objects.filter(tipo=True):
+    categorias_tangibles.append(categoria.nombre)
+  for categoria in Categoria.objects.filter(tipo=False):
+    categorias_no_tangibles.append(categoria.nombre)
+
+  context ={
+    "provincias": provincias,
+    "categorias": {
+      "tangibles": categorias_tangibles,
+      "no_tangibles": categorias_no_tangibles
+    }
+  }
+  if request.user.is_authenticated:
+    context = contextAddUser(request, context)
+    return render(request, 'pages/favoritos-auth.html', context)
+  else:
+    return render(request, 'pages/favoritos.html')
+
 # Envía un archivo json con los distritos correspondientes de provincia (donde la provincia es pasada como un parámetro de una petición GET)
 def getDistritos(request):
   provincia = request.GET['provincia']
@@ -118,13 +142,10 @@ def getDestinos(request):
   categoria = request.GET["categoria"];
 
   recursos = Recurso.objects.all()
-
   if Provincia.objects.filter(nombre=provincia).exists():
     recursos = recursos & Recurso.objects.filter(distrito_id__provincia_id__nombre=provincia)
-
   if Distrito.objects.filter(nombre=distrito).exists():
     recursos = recursos & Recurso.objects.filter(distrito_id__nombre=distrito)
-
   if Categoria.objects.filter(nombre=categoria).exists():
     recursos = recursos & Recurso.objects.filter(categoria_id__nombre=categoria)
 
@@ -162,9 +183,7 @@ def getRecomendaciones(request):
   categoria = request.GET["categoria"];
 
   recursos = Recurso.objects.all().order_by('nombre')[:5]
-
   data=[]
-
   for recurso in recursos:
     data.append({
       'link': recurso.image_URL,
@@ -175,4 +194,43 @@ def getRecomendaciones(request):
       'corazones': 0
     })
 
+  return JsonResponse(data, safe=False)
+
+def getRecursos(request):
+  provincia = request.GET["provincia"];
+  distrito = request.GET["distrito"];
+  categoria = request.GET["categoria"];
+  data = []
+  if request.user.is_authenticated:
+    user = SocialAccount.objects.get(user=request.user)
+    favoritos = Favorito.objects.filter(usuario_id=user)
+    for favorito in favoritos:
+      recurso = favorito.recurso_id        
+      data.append({
+        'id': recurso.id,
+        'link': recurso.image_URL,
+        'nombre': recurso.nombre,
+        'provincia': recurso.distrito_id.provincia_id.nombre,
+        'distrito': recurso.distrito_id.nombre,
+        'categoria': recurso.categoria_id.nombre,
+        'corazones': 0
+      })
+    if Provincia.objects.filter(nombre=provincia).exists():
+      newData = []
+      for recurso in data:
+        if recurso["provincia"] == provincia:
+          newData.append(recurso)
+      data = newData
+    if Distrito.objects.filter(nombre=distrito).exists():
+      newData = []
+      for recurso in data:
+        if recurso["distrito"] == distrito:
+          newData.append(recurso)
+      data = newData
+    if Categoria.objects.filter(nombre=categoria).exists():
+      newData = []
+      for recurso in data:
+        if recurso["categoria"] == categoria:
+          newData.append(recurso)
+      data = newData
   return JsonResponse(data, safe=False)

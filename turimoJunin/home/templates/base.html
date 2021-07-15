@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="{% static 'img/icon.png' %}" />
-    <link rel="stylesheet" href="{% static 'css/estilos.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'sass/estilos.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'icons/css/all.min.css' %}">   
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +24,7 @@
         <div class="navbar__menu">
           <a class="navbar__menu__enlace{% block enlace_destino %}{% endblock %}" href="{% url 'destinos' %}">Destinos</a>
           <a class="navbar__menu__enlace{% block enlace_cultura %}{% endblock %}" href=".">Cultura</a>
-          <a class="navbar__menu__enlace{% block enlace_favoritos %}{% endblock %}" href=".">Mis favoritos</a>
+          <a class="navbar__menu__enlace{% block enlace_favoritos %}{% endblock %}" href="{% url 'favoritos' %}">Mis favoritos</a>
           <div class="navbar__menu__buscador">
             <form action="." class="buscador">
               <input type="text" class="buscador__input buscador__input--focus" placeholder="Buscar">
@@ -91,6 +91,9 @@
       </div>
     </footer>
     <script src="{% static 'js/script.js' %}"></script>
+    <script>
+      activarAnimacionNavbar();
+    </script>
     {% block scripts %}{% endblock %}
   </body>
 </html>
