@@ -4,8 +4,6 @@ from django.http import JsonResponse
 from allauth.socialaccount.models import SocialAccount
 from .models import Provincia, Categoria, Distrito, Recurso, Coordenadas, Favorito
 
-
-
 def contextAddUser(request, context):
   user = {
     "is_authenticated": request.user.is_authenticated
@@ -28,7 +26,7 @@ def homeView(request):
       'nombre': recurso.nombre,
       'provincia': recurso.distrito_id.nombre,
       'categoria': recurso.categoria_id.nombre,
-      'corazones': 0
+      'corazones': Favorito.objects.filter(recurso_id=recurso).count()
     })
 
   context ={
@@ -234,3 +232,26 @@ def getRecursos(request):
           newData.append(recurso)
       data = newData
   return JsonResponse(data, safe=False)
+
+#-usuario es anonimo user (anonimo, auth) tipo (all, natural, cultural, contemporaneo)
+def getRecursosRecomendados(user):
+  recomendados = []
+  if user.is_authenticated:
+    favoritos = Favorito.objects.exclude(usuario_id=user)
+    for f in favoritos:
+      recurso = favorito.recurso_id
+    print("f")
+  else:
+    for favorito in favoritos:
+      recurso = favorito.recurso_id
+      data.append({
+        'id': recurso.id,
+        'link': recurso.image_URL,
+        'nombre': recurso.nombre,
+        'provincia': recurso.distrito_id.provincia_id.nombre,
+        'distrito': recurso.distrito_id.nombre,
+        'categoria': recurso.categoria_id.nombre,
+        'corazones': 0
+      })
+
+  return recomendados

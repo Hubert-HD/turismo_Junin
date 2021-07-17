@@ -68,11 +68,11 @@
               <span class="etiqueta__icono"><i class="fas fa-tag"></i></span>
               <span class="etiqueta__clase">{{ card.categoria }}</span>
             </div>
-            <div class="corazon">
-              <span class="corazon__icon"><i class="fas fa-heart"></i></span>
+            <div class="corazon corazon--desactive">
+              <span class="corazon__icon"><i class="fas fa-heart"></i><i class="far fa-heart"></i></span>
               <span class="corazon__numero">{{ card.corazones }}</span>
             </div>
-            <a class="flecha" href="{{ card.nombre }}/"><i class="fas fa-arrow-right"></i></a>
+            <a class="flecha" href="/destinos/{{ card.nombre }}/"><i class="fas fa-arrow-right"></i></a>
           </div>
         </div>
       {% endfor %}
@@ -82,7 +82,6 @@
   <h4 class="recomendados__titulo">Sitios culturales recomendados</h4>
   <div class="recomendados">
     <div class="recomendados__galeria">
-
       {% for card in recomendados.culturales %}
         <div class="card">
           <div class="card__imagen">
@@ -95,22 +94,20 @@
               <span class="etiqueta__icono"><i class="fas fa-tag"></i></span>
               <span class="etiqueta__clase">{{ card.categoria }}</span>
             </div>
-            <div class="corazon">
-              <span class="corazon__icon"><i class="fas fa-heart"></i></span>
+            <div class="corazon corazon--desactive">
+              <span class="corazon__icon"><i class="fas fa-heart"></i><i class="far fa-heart"></i></span>
               <span class="corazon__numero">{{ card.corazones }}</span>
             </div>
-            <a class="flecha" href="{{ card.nombre }}/"><i class="fas fa-arrow-right"></i></a>
+            <a class="flecha" href="/destinos/{{ card.nombre }}/"><i class="fas fa-arrow-right"></i></a>
           </div>
         </div>
       {% endfor %}
-
     </div>
   </div>
 
   <h4 class="recomendados__titulo">Realizaciones contemporaneas recomendados</h4>
   <div class="recomendados">
     <div class="recomendados__galeria">
-
       {% for card in recomendados.realizaciones %}
         <div class="card">
           <div class="card__imagen">
@@ -123,15 +120,14 @@
               <span class="etiqueta__icono"><i class="fas fa-tag"></i></span>
               <span class="etiqueta__clase">{{ card.categoria }}</span>
             </div>
-            <div class="corazon">
-              <span class="corazon__icon"><i class="fas fa-heart"></i></span>
+            <div class="corazon corazon--desactive">
+              <span class="corazon__icon"><i class="fas fa-heart"></i><i class="far fa-heart"></i></span>
               <span class="corazon__numero">{{ card.corazones }}</span>
             </div>
-            <a class="flecha" href="{{ card.nombre }}/"><i class="fas fa-arrow-right"></i></a>
+            <a class="flecha" href="/destinos/{{ card.nombre }}/"><i class="fas fa-arrow-right"></i></a>
           </div>
         </div>
       {% endfor %}
-
     </div>
   </div>
 </div>

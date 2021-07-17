@@ -231,3 +231,31 @@ function activarCheckList (){
     })
   });
 }
+
+// Activa el boton para cerrar el modal
+function activarModal(){
+  let modal = document.getElementById("modal-login");
+  let button = document.getElementById("button-close");
+
+  button.addEventListener("click", () => {
+    if(modal.classList.contains("modal--active"))
+      modal.classList.replace("modal--active", "modal--desactive")
+  });
+}
+
+function activarCorazones(){
+  let corazonesArray = document.querySelectorAll(".corazon--desactive");
+  let modal = document.getElementById("modal-login");
+
+  corazonesArray && corazonesArray.forEach(corazon => {
+    let corazonbutton = corazon.querySelector(".corazon__icon")
+    corazonbutton.addEventListener("click", () => {
+      if(modal.classList.contains("modal--desactive"))
+        modal.classList.replace("modal--desactive", "modal--active")
+    });
+  });
+}
+
+function añadirFavorito(){
+  alert("se añadio")
+}

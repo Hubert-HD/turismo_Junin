@@ -90,9 +90,23 @@
         </div>
       </div>
     </footer>
+
+    <div id="modal-login" class="modal modal--desactive">
+      <div class="login">
+        <button id="button-close" class="modal__button"><i class="fas fa-times"></i></button>
+        <div class="login__imagen-container">
+          <img class="login__imagen-container__imagen" src="{% static 'img/logo.png' %}" alt="logo.png">
+        </div>
+        <h3 class="login__titulo">Ingresa a tu cuenta</h3>
+        <a class="login__button" href="{% provider_login_url 'google' %}"><span><i class="fab fa-google"></i></span>Continuar con google</a>
+      </div>
+    </div>
+
     <script src="{% static 'js/script.js' %}"></script>
     <script>
       activarAnimacionNavbar();
+      activarModal();
+      activarCorazones();
     </script>
     {% block scripts %}{% endblock %}
   </body>
