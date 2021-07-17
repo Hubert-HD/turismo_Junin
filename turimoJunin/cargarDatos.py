@@ -21,16 +21,21 @@ with open('data.json') as file:
     p = Provincia.objects.create(nombre=provincia["nombre"])
     for distrito in provincia["distritos"]:
       Distrito.objects.create(nombre=distrito, provincia_id=p)
+  print("Se añadio las provincias")
 
   for categoria in categorias:
     Categoria.objects.create(nombre=categoria, tipo=True)
+  print("Se añadio las categorias")
 
   for recurso in recursos:
     r = Recurso.objects.create(nombre=recurso["nombre"], image_URL=recurso["imagen"], subtitulo=recurso["subtitulo"], descripcion=recurso["descripcion"], distrito_id=Distrito.objects.get(nombre=recurso["ubicacion"]["distrito"]), categoria_id=Categoria.objects.get(nombre=recurso["categoria"]))
     Coordenadas.objects.create(latitud=recurso["coordenadas"]["latitud"], longitud=recurso["coordenadas"]["longuitud"], recurso_id=r)
+  print("Se añadio los recursos")
+  
+print("Se añadieron todos los datos")
 
-print(Provincia.objects.all())
+""" print(Provincia.objects.all())
 print(Categoria.objects.all())
 print(Distrito.objects.all())
 print(Coordenadas.objects.all())
-print(Recurso.objects.all())
+print(Recurso.objects.all()) """
